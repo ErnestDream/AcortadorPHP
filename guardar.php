@@ -1,6 +1,7 @@
 <?php
     // 1. Conectamos a la base de datos
-    $pdo = new PDO('mysql:host=localhost;dbname=urls;charset=utf8mb4', 'root', 'flipper');
+
+    $pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // 1.5 Si no existe, la crea automáticamente.
