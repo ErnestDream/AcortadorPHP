@@ -9,7 +9,7 @@
     //    echo "No enviaste ninguna URL.";
     //    exit;
     //}
-    $datos = json_decode(file_get_contents("php://input"), true);
+    // $datos = json_decode(file_get_contents("php://input"), true);
 
     if (!isset($datos['url'])) {
         echo "No enviaste ninguna URL. :)";
@@ -25,8 +25,8 @@
     }
 
     // 2. Recibimos la URL que el usuario mandó
-    //$url = $_POST['url']; // (viene del formulario)
-    $url = $datos['url'];
+    $url = $_POST['url']; // (viene del formulario)
+    //$url = $datos['url'];
 
 
     // 3. Generamos un slug único (código corto)
