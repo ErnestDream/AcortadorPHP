@@ -12,7 +12,7 @@
     $datos = json_decode(file_get_contents("php://input"), true);
 
     if (!isset($datos['url'])) {
-        echo "No enviaste ninguna URL.";
+        echo "No enviaste ninguna URL. :)";
         exit;
     }
 
