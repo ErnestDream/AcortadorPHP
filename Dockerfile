@@ -12,7 +12,6 @@ COPY nginx.conf /etc/nginx/sites-available/default
 RUN chown -R www-data:www-data /var/www/html
 
 # Expone el puerto que usará NGINX
-EXPOSE 80
 EXPOSE 8080
 
 # Inicia NGINX y PHP-FPM
