@@ -11,7 +11,7 @@ if ($method === 'POST') {
     
     if (!isset($data['url']) || empty($data['url'])) {
         http_response_code(400); // Bad Request
-        //echo json_encode(['error' => 'No se proporcionó una URL.']);
+        echo json_encode(['error' => 'No se proporcionó una URL.']);
         exit;
     }
 
@@ -39,13 +39,13 @@ if ($method === 'POST') {
     $stmt->execute([$slug]);
     $resultado = $stmt->fetch();
 
-    //if ($resultado) {
-    //    echo json_encode(["slug" => $slug, "url" => $resultado['url']]);
-    //} else {
-    //    http_response_code(404); // Not Found
-    //    echo json_encode(['error' => 'Slug no encontrada.']);
-    //}
+    if ($resultado) {
+        echo json_encode(["slug" => $slug, "url" => $resultado['url']]);
+    } else {
+        http_response_code(404); // Not Found
+        echo json_encode(['error' => 'Slug no encontrada.']);
+    }
 } else {
     http_response_code(405); // Method Not Allowed
-    //echo json_encode(['error' => 'Método no permitido.']);
+    echo json_encode(['error' => 'Método no permitido.']);
 }

@@ -12,7 +12,7 @@
 <<<<<<< HEAD
     //$datos = json_decode(file_get_contents("php://input"), true);
 =======
-    // $datos = json_decode(file_get_contents("php://input"), true);
+    $datos = json_decode(file_get_contents("php://input"), true);
 >>>>>>> 2efd379949782690c887148094471087fd715a05
 
     if (!isset($datos['url'])) {
@@ -30,7 +30,7 @@
 
     // 2. Recibimos la URL que el usuario mandó
     $url = $_POST['url']; // (viene del formulario)
-    //$url = $datos['url'];
+    $url = $datos['url'];
 
 
     // 3. Generamos un slug único (código corto)
