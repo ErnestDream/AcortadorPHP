@@ -16,7 +16,7 @@
 >>>>>>> 2efd379949782690c887148094471087fd715a05
 
     if (!isset($datos['url'])) {
-        echo "No enviaste ninguna URL. :)";
+        echo "No enviaste ninguna URL.";
         exit;
     }
 
