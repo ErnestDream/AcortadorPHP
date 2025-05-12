@@ -1,4 +1,5 @@
 <?php
+
 // 1. Conectamos a la base de datos
 	$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -27,29 +28,29 @@
 	//} else {
 		
 	// 5. Si no existe, mostramos error
-	http_response_code(404);
+	//http_response_code(404);
     	//echo "URL no encontrada.";
 	//}
 	//
-	$path = trim($_SERVER['REQUEST_URI'], '/');
+	
+	$path = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), "/");
 
-	// Si no hay slug, muestra una página principal o un formulario
-	if ($path === '' || $path === 'index.php') {
-    	echo "Bienvenido al acortador. Visita una URL corta para ser redirigido.";
-    	exit;
-	}
+if ($path === "" || $path === "index.php") {
+    echo "Bienvenido. Usa una URL corta para redirigir.";
+    exit;
+}
 
-	// Buscar el slug en la base de datos
-	$stmt = $pdo->prepare("SELECT url FROM urls WHERE slug = ?");
-	$stmt->execute([$path]);
+$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'TU_CONTRASEÑA');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	if ($row = $stmt->fetch()) {
-    	// Redirige si se encuentra
-    	header("Location: " . $row['url']);
-    	exit;
-	} else {
-    	// Error si no se encuentra
-    	http_response_code(404);
-    	echo "404 - URL no encontrada";
-	}
+$stmt = $pdo->prepare("SELECT url FROM urls WHERE slug = ?");
+$stmt->execute([$path]);
+
+if ($row = $stmt->fetch()) {
+    header("Location: " . $row['url']);
+    exit;
+} else {
+    http_response_code(404);
+    echo "404 - URL no encontrada";
+}
 ?>
