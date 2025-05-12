@@ -5,15 +5,29 @@
 // 2. Obtenemos el slug que está en la URL
 	$slug = ltrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); 
 
+//2.5
+	if($slug === '')
+	{
+		echo "Bienvenido al acortador. Proporciona una URL."
+		exit;
+	}	
+
+
 // 3. Buscamos en la base de datos
 	$stmt = $pdo->prepare("SELECT url FROM urls WHERE slug = ?");
 	$stmt->execute([$slug]);
-	if ($row = $stmt->fetch()) {
-// 4. Si existe, redirigimos
-    header('Location: ' . $row['url']);
-    exit;
+	
+	if ($row = $stmt->fetch()) 
+	{
+		
+	// 4. Si existe, redirigimos
+    		header('Location: ' . $row['url']);
+		exit;
+
 	} else {
-// 5. Si no existe, mostramos error
-    echo "URL no encontrada.";
-    }
+		
+	// 5. Si no existe, mostramos error
+	http_response_code(404);
+    	echo "URL no encontrada.";
+    	}
 ?>
