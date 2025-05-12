@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Conexión a la base de datos (usa las variables de entorno de Railway)
+// Conexión a la base de datos (usando variables de entorno de Railway)
 $host = getenv('MYSQLHOST');
 $port = getenv('MYSQLPORT');
 $db   = getenv('MYSQLDATABASE');
@@ -21,15 +21,21 @@ $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
 // Validar datos recibidos
-if (!$data || !isset($data['id'], $data['personName'], $data['personEmail'], $data['tipo'])) {
-    echo json_encode(["success" => false, "error" => "Datos incompletos"]);
+if (!$data) {
+    echo json_encode(["success" => false, "error" => "Datos no recibidos"]);
     exit;
 }
 
-$id = $data['id'];
-$nombre = $data['personName'];
-$email = $data['personEmail'];
-$tipo = $data['tipo'];
+// Asignar valores con comprobación
+$id = $data['id'] ?? null;
+$nombre = $data['nombre'] ?? null;
+$email = $data['email'] ?? null;
+$tipo = $data['tipo'] ?? null;
+
+if (!$id || !$nombre || !$email || !$tipo) {
+    echo json_encode(["success" => false, "error" => "Datos incompletos"]);
+    exit;
+}
 
 // Insertar usuario
 $sql = "INSERT INTO usuarios (id, nombre, email, tipo) VALUES (?, ?, ?, ?)";
