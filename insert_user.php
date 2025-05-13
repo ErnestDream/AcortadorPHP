@@ -25,7 +25,7 @@ if ($method === 'POST') {
     if (!empty($missing)) {
         http_response_code(400);
         echo json_encode([
-            "success" => false, 
+            "success" => false,
             "error" => "Campos faltantes: " . implode(', ', $missing)
         ]);
         exit;
@@ -37,27 +37,15 @@ if ($method === 'POST') {
     $tipo = $data['tipo'];
     $intentos = $data['intentos'];
 
-    // Verificar si el usuario ya existe
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
-    $stmt->execute([$email]);
-    $existe = $stmt->fetchColumn();
-    
-    if ($existe > 0) {
-        echo json_encode([
-            "success" => false,
-            "message" => "El usuario ya existe"
-        ]);
-        exit;
-    }
-
-
     try {
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, tipo, intentos) VALUES (?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, tipo, intentos)
+                               VALUES (?, ?, ?, ?)
+                               ON DUPLICATE KEY UPDATE tipo = VALUES(tipo)");
         $stmt->execute([$nombre, $email, $tipo, $intentos]);
-        
+
         echo json_encode([
             "success" => true,
-            "message" => "Usuario registrado exitosamente",
+            "message" => "Usuario insertado o actualizado",
             "data" => [
                 "nombre" => $nombre,
                 "email" => $email,
@@ -65,15 +53,15 @@ if ($method === 'POST') {
                 "intentos" => $intentos
             ]
         ]);
-        
+
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode([
-            "success" => false, 
+            "success" => false,
             "error" => "Error en la base de datos: " . $e->getMessage()
         ]);
     }
-    
+
 } else {
     http_response_code(405);
     echo json_encode(["success" => false, "error" => "Método no permitido"]);
