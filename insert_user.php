@@ -4,45 +4,41 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Conexión a la base de datos (usando variables de entorno de Railway)
-
-$db   = getenv('MYSQL_DATABASE');
-$publicURL = getenv('MYSQL_PUBLIC_URL');
-$rootPW = getenv('MYSQL_ROOT_PASSWORD');
-$url = getenv('MYSQL_URL');
-$Mydb = getenv('MYSQLDATABASE');
+// 1. Conexión CORRECTA usando variables de Railway
 $host = getenv('MYSQLHOST');
-$pass = getenv('MYSQLPASSWORD');
-$port = getenv('MYSQLPORT');
 $user = getenv('MYSQLUSER');
+$pass = getenv('MYSQLPASSWORD');
+$db   = getenv('MYSQLDATABASE');
+$port = getenv('MYSQLPORT');
 
-$conn = new mysqli($db, $publicURL, $rootPW, $url, $Mydb, $host, $pass, $port, $user);
+// Conexión con MySQLi
+$conn = new mysqli($host, $user, $pass, $db, $port);
+
+// Verificar error
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "error" => "Conexión fallida: " . $conn->connect_error]));
 }
 
-// Obtener el contenido POST como JSON
+// 2. Recibir datos (coincidiendo con Android)
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
-// Validar datos recibidos
-if (!$data) {
-    echo json_encode(["success" => false, "error" => "Datos no recibidos"]);
-    exit;
+// Validar campos
+$required = ['id', 'nombre', 'email', 'tipo'];
+foreach ($required as $field) {
+    if (empty($data[$field])) {
+        echo json_encode(["success" => false, "error" => "Falta el campo: $field"]);
+        exit;
+    }
 }
 
-// Asignar valores con comprobación
-$id = $data['id'] ?? null;
-$nombre = $data['personName'] ?? null;
-$email = $data['personEmail'] ?? null;
-$tipo = $data['tipo'] ?? null;
+// 3. Asignar valores correctos
+$id = $data['id'];
+$nombre = $data['nombre'];    // ¡Coincide con Android!
+$email = $data['email'];      // ¡Coincide con Android!
+$tipo = $data['tipo'];
 
-if (!$id || !$nombre || !$email || !$tipo) {
-    echo json_encode(["success" => false, "error" => "Datos incompletos"]);
-    exit;
-}
-
-// Insertar usuario
+// 4. Insertar en la base de datos
 $sql = "INSERT INTO usuarios (id, nombre, email, tipo) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssss", $id, $nombre, $email, $tipo);
