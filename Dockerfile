@@ -10,5 +10,5 @@ RUN docker-php-ext-install pdo pdo_mysql
 EXPOSE 8080
 
 # Usa el servidor embebido de PHP como router
-CMD ["php", "-S", "0.0.0.0:8080", "index.php"]
+CMD ["php", "-S", "0.0.0.0:8080"]
 
