@@ -1,6 +1,6 @@
 FROM php:8.1-cli
 
-WORKDIR /var/www/html
+WORKDIR /app
 COPY . .
 
 # Instala extensiones requeridas (pdo, pdo_mysql)
