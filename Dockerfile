@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 
 # Instala extensiones requeridas (pdo, pdo_mysql)
-RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql && docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
 # Puerto en el que Railway escucha por defecto
 EXPOSE 8080
