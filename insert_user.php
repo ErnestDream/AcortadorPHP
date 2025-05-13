@@ -37,6 +37,20 @@ if ($method === 'POST') {
     $tipo = $data['tipo'];
     $intentos = $data['intentos'];
 
+    // Verificar si el usuario ya existe
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
+    $existe = $stmt->fetchColumn();
+    
+    if ($existe > 0) {
+        echo json_encode([
+            "success" => false,
+            "message" => "El usuario ya existe"
+        ]);
+        exit;
+    }
+
+
     try {
         $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, tipo, intentos) VALUES (?, ?, ?, ?)");
         $stmt->execute([$nombre, $email, $tipo, $intentos]);
