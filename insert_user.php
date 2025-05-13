@@ -5,13 +5,18 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Conexión a la base de datos (usando variables de entorno de Railway)
-$host = getenv('MYSQLHOST');
-$port = getenv('MYSQLPORT');
-$db   = getenv('MYSQLDATABASE');
-$user = getenv('MYSQLUSER');
-$pass = getenv('MYSQLPASSWORD');
 
-$conn = new mysqli($host, $user, $pass, $db, $port);
+$db   = getenv('MYSQL_DATABASE');
+$publicURL = getenv('MYSQL_PUBLIC_URL');
+$rootPW = getenv('MYSQL_ROOT_PASSWORD');
+$url = getenv('MYSQL_URL');
+$Mydb = getenv('MYSQLDATABASE');
+$host = getenv('MYSQLHOST');
+$pass = getenv('MYSQLPASSWORD');
+$port = getenv('MYSQLPORT');
+$user = getenv('MYSQLUSER');
+
+$conn = new mysqli($db, $publicURL, $rootPW, $url, $Mydb, $host, $pass, $port, $user);
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "error" => "Conexión fallida: " . $conn->connect_error]));
 }
@@ -28,8 +33,8 @@ if (!$data) {
 
 // Asignar valores con comprobación
 $id = $data['id'] ?? null;
-$nombre = $data['nombre'] ?? null;
-$email = $data['email'] ?? null;
+$nombre = $data['personName'] ?? null;
+$email = $data['personEmail'] ?? null;
 $tipo = $data['tipo'] ?? null;
 
 if (!$id || !$nombre || !$email || !$tipo) {
