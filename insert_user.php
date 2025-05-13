@@ -7,34 +7,61 @@ header("Access-Control-Allow-Headers: Content-Type");
 $pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// 2. Recibir datos (coincidiendo con Android)
-$json = file_get_contents('php://input');
-$data = json_decode($json, true);
+$method = $_SERVER['REQUEST_METHOD'];
 
-// Validar campos
-$required = ['nombre', 'email', 'tipo'];
-foreach ($required as $field) {
-    if (empty($data[$field])) {
-        echo json_encode(["success" => false, "error" => "Falta el campo: $field"]);
+if ($method === 'POST') {
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    // Validar campos requeridos
+    $required = ['nombre', 'email', 'tipo', 'intentos'];
+    $missing = [];
+    foreach ($required as $field) {
+        if (empty($data[$field])) {
+            $missing[] = $field;
+        }
+    }
+
+    if (!empty($missing)) {
+        http_response_code(400);
+        echo json_encode([
+            "success" => false, 
+            "error" => "Campos faltantes: " . implode(', ', $missing)
+        ]);
         exit;
     }
-}
 
-// 3. Asignar valores correctos
-$nombre = $data['nombre'];    // ¡Coincide con Android!
-$email = $data['email'];      // ¡Coincide con Android!
-$tipo = $data['tipo'];
+    // Asignar valores
+    $nombre = $data['nombre'];
+    $email = $data['email'];
+    $tipo = $data['tipo'];
+    $intentos = $data['intentos'];
 
-// 4. Insertar en la base de datos
-$sql = "INSERT INTO usuarios (nombre, email, tipo) VALUES (?, ?, ?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ssss", $nombre, $email, $tipo);
-
-if ($stmt->execute()) {
-    echo json_encode(["success" => true]);
+    try {
+        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, tipo, intentos) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$nombre, $email, $tipo, $intentos]);
+        
+        echo json_encode([
+            "success" => true,
+            "message" => "Usuario registrado exitosamente",
+            "data" => [
+                "nombre" => $nombre,
+                "email" => $email,
+                "tipo" => $tipo,
+                "intentos" => $intentos
+            ]
+        ]);
+        
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode([
+            "success" => false, 
+            "error" => "Error en la base de datos: " . $e->getMessage()
+        ]);
+    }
+    
 } else {
-    echo json_encode(["success" => false, "error" => $stmt->error]);
+    http_response_code(405);
+    echo json_encode(["success" => false, "error" => "Método no permitido"]);
 }
-
-$conn->close();
 ?>
