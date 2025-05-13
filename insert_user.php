@@ -12,7 +12,7 @@ $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
 // Validar campos
-$required = ['id', 'nombre', 'email', 'tipo'];
+$required = ['nombre', 'email', 'tipo'];
 foreach ($required as $field) {
     if (empty($data[$field])) {
         echo json_encode(["success" => false, "error" => "Falta el campo: $field"]);
