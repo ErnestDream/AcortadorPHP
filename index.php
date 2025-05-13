@@ -1,8 +1,8 @@
 <?php
 
 // 1. Conectamos a la base de datos
-	$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
-	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	//$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
+	//$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // 2. Obtenemos el slug que está en la URL
 	//$slug = ltrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); 
 
@@ -40,8 +40,10 @@ if ($path === "" || $path === "index.php") {
     exit;
 }
 
-$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'TU_CONTRASEÑA');
+
+$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root','PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 
 $stmt = $pdo->prepare("SELECT url FROM urls WHERE slug = ?");
 $stmt->execute([$path]);
