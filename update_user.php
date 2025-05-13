@@ -18,16 +18,16 @@ try {
 
     $email = $data['email'];
 
-    $stmt = $pdo->prepare("UPDATE usuarios SET tipo = 'Premium' WHERE email = ?");
+    // Establece tipo = 'Premium' e intentos = -1 (representando "ilimitados")
+    $stmt = $pdo->prepare("UPDATE usuarios SET tipo = 'Premium', intentos = -1 WHERE email = ?");
     $stmt->execute([$email]);
 
     if ($stmt->rowCount() > 0) {
-        echo json_encode(["success" => true, "message" => "Usuario actualizado a Premium"]);
+        echo json_encode(["success" => true, "message" => "Usuario actualizado a Premium con intentos ilimitados"]);
     } else {
-        echo json_encode(["success" => false, "message" => "No se actualizó el usuario. Email incorrecto o ya es Premium."]);
+        echo json_encode(["success" => false, "message" => "No se actualizó el usuario"]);
     }
 
 } catch (PDOException $e) {
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }
-?>
