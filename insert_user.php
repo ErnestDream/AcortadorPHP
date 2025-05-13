@@ -4,20 +4,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// 1. Conexión CORRECTA usando variables de Railway
-$host = getenv('MYSQLHOST');
-$user = getenv('MYSQLUSER');
-$pass = getenv('MYSQLPASSWORD');
-$db   = getenv('MYSQLDATABASE');
-$port = getenv('MYSQLPORT');
-
-// Conexión con MySQLi
-$conn = new mysqli($host, $user, $pass, $db, $port);
-
-// Verificar error
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "error" => "Conexión fallida: " . $conn->connect_error]));
-}
+$pdo = new PDO('mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 'root', 'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // 2. Recibir datos (coincidiendo con Android)
 $json = file_get_contents('php://input');
@@ -33,15 +21,14 @@ foreach ($required as $field) {
 }
 
 // 3. Asignar valores correctos
-$id = $data['id'];
 $nombre = $data['nombre'];    // ¡Coincide con Android!
 $email = $data['email'];      // ¡Coincide con Android!
 $tipo = $data['tipo'];
 
 // 4. Insertar en la base de datos
-$sql = "INSERT INTO usuarios (id, nombre, email, tipo) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO usuarios (nombre, email, tipo) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssss", $id, $nombre, $email, $tipo);
+$stmt->bind_param("ssss", $nombre, $email, $tipo);
 
 if ($stmt->execute()) {
     echo json_encode(["success" => true]);
