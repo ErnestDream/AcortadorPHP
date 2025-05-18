@@ -32,10 +32,16 @@ if ($method === 'POST') {
     }
 
     // Asignar valores
-    $nombre = $data['nombre'];
-    $email = $data['email'];
-    $tipo = $data['tipo'];
+    $nombre = (string) ($data['nombre'] ?? '');
+    $email = (string) ($data['email'] ?? '');
+    $tipo = (string) ($data['tipo'] ?? '');
     $intentos = $data['intentos'];
+
+    if (!$id || !$nombre || !$email || !$tipo)
+    {
+	    echo json_encode(["success" => false, "error" => "Datos incompletos"]);
+	    exit;
+    }
 
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
