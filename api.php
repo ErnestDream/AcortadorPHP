@@ -11,15 +11,23 @@ if ($method === 'POST') {
     
     if (!isset($data['url']) || empty($data['url'])) {
         http_response_code(400); // Bad Request
-        echo json_encode(['error' => 'No se proporcionó una URL.']);
+        echo json_encode(['error' => 'Faltan datos.']);
+        exit;
+    }
+
+     if (!isset($data['idUsuario'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'No se proporcionó el idUsuario.']);
         exit;
     }
 
     $url = $data['url'];
+    $idUsuario = $data['idUsuario'];
     $slug = substr(md5(uniqid(rand(), true)), 0, 6);
 
-    $stmt = $pdo->prepare("INSERT INTO urls (slug, url) VALUES (?, ?)");
-    $stmt->execute([$slug, $url]);
+
+    $stmt = $pdo->prepare("INSERT INTO urls (slug, url, idUsuario) VALUES (?, ?, ?)");
+    $stmt->execute([$slug, $url, $idUsuario]);
 
     $host = $_SERVER['HTTP_HOST'];
     $path = rtrim(dirname($_SERVER['PHP_SELF']), '/');
