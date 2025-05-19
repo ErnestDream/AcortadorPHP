@@ -1,6 +1,65 @@
-<!-- index.html o index.php -->
-<form action="guardar.php" method="POST">
-    <input type="text" name="url" placeholder="Pega tu URL aquí" required>
-    <button type="submit">Acortar URL</button>
-  </form>
-  
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Uso de cURL para acortar y eliminar URLs</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Courier New', monospace;
+      padding: 2rem;
+    }
+
+    h1, h2 {
+      color: #00ffcc;
+    }
+
+    pre {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 6px;
+      color: #d4d4d4;
+      overflow-x: auto;
+      border-left: 4px solid #00ffcc;
+      margin-bottom: 2rem;
+    }
+
+    code {
+      color: #f78c6c;
+      background-color: #2d2d2d;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: #b0b0b0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Instrucciones para usar cURL con la API</h1>
+
+  <h2>1. Acortar una URL</h2>
+  <pre>
+curl -X POST  https://acortadorphp-production.up.railway.app/api.php \
+     -H "Content-Type: application/json" \
+     -d '{"url": "https://ejemplo.com", "idUsuario": 1}'
+  </pre>
+  <pre>
+curl -X POST  https://ojglez.com/api.php \
+     -H "Content-Type: application/json" \
+     -d '{"url": "https://ejemplo.com", "idUsuario": 1}'
+  </pre>
+
+  <h2>2. Eliminar una URL</h2>
+  <pre>
+curl -X DELETE http://tudominio.com/api.php \
+     -H "Content-Type: application/json" \
+     -d '{"slug": "abc123"}'
+  </pre>
+
+  <p>Reemplaza <code>tudominio.com</code> con tu dominio real o la ruta donde tengas el script alojado.</p>
+</body>
+</html>  
