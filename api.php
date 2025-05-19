@@ -83,6 +83,32 @@ if ($method === 'POST') {
         echo json_encode(['error' => 'Slug no encontrada.']);
     }
 
+// Método DELETE para la eliminación de una URL por medio de su SLUG
+
+if ($method === 'DELETE') {
+    // Leer el cuerpo de la solicitud
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!isset($data['slug'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'No se proporcionó el slug.']);
+        exit;
+    }
+
+    $slug = $data['slug'];
+
+    $stmt = $pdo->prepare("DELETE FROM urls WHERE slug = ?");
+    $stmt->execute([$slug]);
+
+    if ($stmt->rowCount() > 0) {
+        echo json_encode(['message' => 'URL eliminada con éxito.']);
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'URL no encontrada.']);
+    }
+}
+
+
 
 // Cualquier otro médodo no permitido
 
