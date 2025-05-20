@@ -37,11 +37,11 @@ if ($method === 'POST') {
     $tipo = (string) ($data['tipo'] ?? '');
     $intentos = $data['intentos'];
 
-    if (!$id || !$nombre || !$email || !$tipo)
-    {
-	    echo json_encode(["success" => false, "error" => "Datos incompletos"]);
-	    exit;
-    }
+    //if (!$id || !$nombre || !$email || !$tipo)
+    //{
+	//    echo json_encode(["success" => false, "error" => "Datos incompletos"]);
+	  //  exit;
+    //}
 
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
