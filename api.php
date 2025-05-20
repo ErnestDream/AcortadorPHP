@@ -38,15 +38,16 @@ if ($method === 'POST') {
 
     //Extracción de los datos del cuerpo de la solicitud
     $url = $data['url'];
-    $idUsuario = $data['idUsuario'];
+    //$idUsuario = $data['idUsuario'];
+	$email = $data['email'];
 
     //Generación de un SLUG único de 6 caracteres a partir de un HASH MD5
     $slug = substr(md5(uniqid(rand(), true)), 0, 6);
 
 
     // Insersión de la URL original, del slug y del IdUsuario en la base de datos
-    $stmt = $pdo->prepare("INSERT INTO urls (slug, url, idUsuario) VALUES (?, ?, ?)");
-    $stmt->execute([$slug, $url, $idUsuario]);
+    $stmt = $pdo->prepare("INSERT INTO urlsPrueba (slug, url, email) VALUES (?, ?, ?)");
+    $stmt->execute([$slug, $url, $email]);
 
     //Construcción de la URL acortada
     $host = $_SERVER['HTTP_HOST'];
