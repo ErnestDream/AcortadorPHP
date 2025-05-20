@@ -83,10 +83,10 @@ if ($method === 'POST') {
         http_response_code(404); // Not Found
         echo json_encode(['error' => 'Slug no encontrada.']);
     }
+} 
 
-// Método DELETE para la eliminación de una URL por medio de su SLUG
-
-if ($method === 'DELETE') {
+   // Método DELETE para la eliminación de una URL por medio de su SLUG
+elseif ($method === 'DELETE') {
     // Leer el cuerpo de la solicitud
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -109,11 +109,10 @@ if ($method === 'DELETE') {
     }
 }
 
-
-
 // Cualquier otro médodo no permitido
 
-} else {
+
+else {
     http_response_code(405); // Respuesta al método no permitido
     echo json_encode(['error' => 'Método no permitido.']);
 }
