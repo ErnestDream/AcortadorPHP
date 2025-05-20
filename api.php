@@ -30,7 +30,7 @@ if ($method === 'POST') {
     }
 
     //Verificación de que se haya enviado un IdUsuario válido o existente
-    if (!isset($data['idUsuario'])) {
+    if (!isset($data['email'])) {
         http_response_code(400);
         echo json_encode(['error' => 'No se proporcionó el idUsuario.']);
         exit;
@@ -70,7 +70,7 @@ if ($method === 'POST') {
     $slug = $_GET['slug'] ?? '';
 
     //Busqueda de la URL original asociada al slug en la BD
-    $stmt = $pdo->prepare("SELECT url FROM urls WHERE slug = ?");
+    $stmt = $pdo->prepare("SELECT url FROM urlsPrueba WHERE slug = ?");
     $stmt->execute([$slug]);
     $resultado = $stmt->fetch();
 
@@ -98,7 +98,7 @@ if ($method === 'DELETE') {
 
     $slug = $data['slug'];
 
-    $stmt = $pdo->prepare("DELETE FROM urls WHERE slug = ?");
+    $stmt = $pdo->prepare("DELETE FROM urlsPrueba WHERE slug = ?");
     $stmt->execute([$slug]);
 
     if ($stmt->rowCount() > 0) {
