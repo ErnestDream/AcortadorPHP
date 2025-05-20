@@ -25,6 +25,7 @@ if (!isset($datos['url'])) {
 
 // Recibimos la URL que el usuario mandó y la asignamos a una variale
 $url = $datos['url'];
+$email = $datos['email'];
 
 
 //Generamos un slug único (código corto)
@@ -34,8 +35,8 @@ $slug = substr(md5(uniqid(rand(), true)), 0, 6);
 
 
 //Guardamos el slug y la URL original en la BD
-$stmt = $pdo->prepare("INSERT INTO urls (slug, url) VALUES (?, ?)");
-$stmt->execute([$slug, $url]);
+$stmt = $pdo->prepare("INSERT INTO urlsPrueba (slug, url, email) VALUES (?, ?, ?)");
+$stmt->execute([$slug, $url, $email]);
 
 
 // Construir y ostrar la URL acortada

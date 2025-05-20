@@ -30,7 +30,7 @@ if ($method === 'POST') {
     }
 
     //Verificación de que se haya enviado un IdUsuario válido o existente
-    if (!isset($data['idUsuario'])) {
+    if (!isset($data['email'])) {
         http_response_code(400);
         echo json_encode(['error' => 'No se proporcionó el idUsuario.']);
         exit;
@@ -38,15 +38,16 @@ if ($method === 'POST') {
 
     //Extracción de los datos del cuerpo de la solicitud
     $url = $data['url'];
-    $idUsuario = $data['idUsuario'];
+    //$idUsuario = $data['idUsuario'];
+	$email = $data['email'];
 
     //Generación de un SLUG único de 6 caracteres a partir de un HASH MD5
     $slug = substr(md5(uniqid(rand(), true)), 0, 6);
 
 
     // Insersión de la URL original, del slug y del IdUsuario en la base de datos
-    $stmt = $pdo->prepare("INSERT INTO urls (slug, url, idUsuario) VALUES (?, ?, ?)");
-    $stmt->execute([$slug, $url, $idUsuario]);
+    $stmt = $pdo->prepare("INSERT INTO urlsPrueba (slug, url, email) VALUES (?, ?, ?)");
+    $stmt->execute([$slug, $url, $email]);
 
     //Construcción de la URL acortada
     $host = $_SERVER['HTTP_HOST'];
@@ -69,7 +70,7 @@ if ($method === 'POST') {
     $slug = $_GET['slug'] ?? '';
 
     //Busqueda de la URL original asociada al slug en la BD
-    $stmt = $pdo->prepare("SELECT url FROM urls WHERE slug = ?");
+    $stmt = $pdo->prepare("SELECT url FROM urlsPrueba WHERE slug = ?");
     $stmt->execute([$slug]);
     $resultado = $stmt->fetch();
 
@@ -97,7 +98,7 @@ if ($method === 'DELETE') {
 
     $slug = $data['slug'];
 
-    $stmt = $pdo->prepare("DELETE FROM urls WHERE slug = ?");
+    $stmt = $pdo->prepare("DELETE FROM urlsPrueba WHERE slug = ?");
     $stmt->execute([$slug]);
 
     if ($stmt->rowCount() > 0) {
