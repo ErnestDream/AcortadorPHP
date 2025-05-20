@@ -21,7 +21,7 @@ if ($path === "" || $path === "index.php") {
 }
 
 //Busqueda en la BD la URL original asociada al slug
-$stmt = $pdo->prepare("SELECT url FROM urls WHERE slug = ?");
+$stmt = $pdo->prepare("SELECT url FROM urlsPrueba WHERE slug = ?");
 $stmt->execute([$path]);
 
 //Si se encuentra la URL original, redirigimos al usuario
