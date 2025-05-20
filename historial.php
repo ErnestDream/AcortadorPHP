@@ -13,7 +13,7 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 
-    $stmt = $pdo->prepare("SELECT slug, url FROM urls WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT slug, url FROM urlsPrueba WHERE email = ?");
     $stmt->execute([$email]);
 
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
