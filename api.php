@@ -15,12 +15,10 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $method = $_SERVER['REQUEST_METHOD'];
 
 //Método POST, para crear una URL acortada
-
 if ($method === 'POST') {
 	
     //Lee y decodifica el cuerpo JSON 	
     $data = json_decode(file_get_contents("php://input"), true);
-
 
     //Verificación de que se haya enviado una URL valida
     if (!isset($data['url']) || empty($data['url'])) {
@@ -38,12 +36,10 @@ if ($method === 'POST') {
 
     //Extracción de los datos del cuerpo de la solicitud
     $url = $data['url'];
-    //$idUsuario = $data['idUsuario'];
-	$email = $data['email'];
+    $email = $data['email'];
 
     //Generación de un SLUG único de 6 caracteres a partir de un HASH MD5
     $slug = substr(md5(uniqid(rand(), true)), 0, 6);
-
 
     // Insersión de la URL original, del slug y del IdUsuario en la base de datos
     $stmt = $pdo->prepare("INSERT INTO urlsPrueba (slug, url, email) VALUES (?, ?, ?)");
@@ -61,9 +57,7 @@ if ($method === 'POST') {
         "short_url" => $shortUrl
     ]);
 
-
-    //Método GET, para obtener la URL original mediante el slug
-
+//Método GET, para obtener la URL original mediante el slug
 } elseif ($method === 'GET') {
 	
     // Obtiene el parametro slug de la URL, o una candena vacia
@@ -73,20 +67,18 @@ if ($method === 'POST') {
     $stmt = $pdo->prepare("SELECT url FROM urlsPrueba WHERE slug = ?");
     $stmt->execute([$slug]);
     $resultado = $stmt->fetch();
-
     
     if ($resultado) {
-	//Si se encuentra la URL, se devuelve en formato JSON
+        //Si se encuentra la URL, se devuelve en formato JSON
         echo json_encode(["slug" => $slug, "url" => $resultado['url']]);
     } else {
-	//Si no se encuentra, se devuelve un error 404
+        //Si no se encuentra, se devuelve un error 404
         http_response_code(404); // Not Found
         echo json_encode(['error' => 'Slug no encontrada.']);
     }
-} 
 
-   // Método DELETE para la eliminación de una URL por medio de su SLUG
-elseif ($method === 'DELETE') {
+// Método DELETE para la eliminación de una URL por medio de su SLUG
+} elseif ($method === 'DELETE') {
     // Leer el cuerpo de la solicitud
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -107,12 +99,10 @@ elseif ($method === 'DELETE') {
         http_response_code(404);
         echo json_encode(['error' => 'URL no encontrada.']);
     }
-}
 
 // Cualquier otro médodo no permitido
-
-
-else {
+} else {
     http_response_code(405); // Respuesta al método no permitido
     echo json_encode(['error' => 'Método no permitido.']);
 }
+
