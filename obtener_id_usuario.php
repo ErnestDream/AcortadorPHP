@@ -1,33 +1,19 @@
 <?php
+// Configuración de cabeceras HTTP para API REST
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Configuración de la base de datos (cambiar por tus credenciales)
-define('DB_HOST', 'mysql.railway.internal');
-define('DB_NAME', 'railway');
-define('DB_USER', 'root');
-define('DB_PASS', 'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc');
+// Conexión a la BD por medio de PDO
+$pdo = new PDO(
+    'mysql:host=mysql.railway.internal;dbname=railway;charset=utf8mb4', 
+    'root', 
+    'PmbYEyrQWIIItorYmqhWMsuaRKHACDcc'
+);
 
-try {
-    // Conexión PDO con configuración segura
-    $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_EMULATE_PREPARES => false
-        ]
-    );
-} catch (PDOException $e) {
-    http_response_code(500);
-    die(json_encode([
-        "success" => false,
-        "error" => "Error de conexión a la base de datos"
-    ]));
-}
+// Configura PDO para lanzar excepciones en errores SQL (mejor manejo de errores)
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 try {
     // Obtener email según el método de solicitud
@@ -39,7 +25,7 @@ try {
         $email = $data['email'] ?? '';
     }
 
-    // Validaciones básicas
+    // Validación 1: Campo email no vacío
     if (empty($email)) {
         http_response_code(400);
         echo json_encode([
@@ -48,7 +34,8 @@ try {
         ]);
         exit;
     }
-
+    
+    // Validación 2: Formato de email válido
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         http_response_code(400);
         echo json_encode([
@@ -58,18 +45,26 @@ try {
         exit;
     }
 
-    // Consulta segura con prepared statement
+    /**
+     * Consulta preparada para seguridad contra SQL Injection
+     * - Selecciona: id, nombre, tipo e intentos
+     * - Filtra por email (parámetro :email)
+     * - LIMIT 1 para obtener solo un resultado
+     */
     $stmt = $pdo->prepare("
         SELECT id, nombre, tipo, intentos 
         FROM usuarios 
         WHERE email = :email
         LIMIT 1
     ");
-    
+
+    // Ejecuta la consulta con el parámetro email
     $stmt->execute([':email' => $email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    //Respuesta de la API
     if ($usuario) {
+        // Caso éxito: Usuario encontrado
         echo json_encode([
             "success" => true,
             "data" => [
@@ -80,6 +75,7 @@ try {
             ]
         ]);
     } else {
+        // Caso error: Usuario no existe
         http_response_code(404);
         echo json_encode([
             "success" => false,
@@ -88,6 +84,7 @@ try {
     }
 
 } catch (PDOException $e) {
+    // Error específico de la base de datos
     http_response_code(500);
     error_log("Error en BD: " . $e->getMessage());
     echo json_encode([
@@ -95,6 +92,7 @@ try {
         "error" => "Error en la base de datos"
     ]);
 } catch (Exception $e) {
+    // Error genérico del servidor
     http_response_code(500);
     echo json_encode([
         "success" => false,
